@@ -1,5 +1,6 @@
 import { FastifyInstance } from 'fastify'
 import { authenticate } from './controllers/authenticate'
+import { profile } from './controllers/profile'
 import { register } from './controllers/register'
 
 export async function appRoutes(app: FastifyInstance) {
@@ -7,4 +8,7 @@ export async function appRoutes(app: FastifyInstance) {
 
   // rota de autenticação
   app.post('/sessions', authenticate)
+
+  /** Autenticado */
+  app.get('/me', profile)
 }
