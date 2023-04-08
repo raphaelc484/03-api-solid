@@ -43,7 +43,7 @@ export class CheckInUseCase {
       },
       {
         latitude: gym.latitude.toNumber(),
-        longitude: gym.latitude.toNumber(),
+        longitude: gym.longitude.toNumber(),
       },
     )
 
