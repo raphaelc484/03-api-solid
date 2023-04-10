@@ -19,9 +19,38 @@ export async function authenticate(
 
     const { user } = await authencateUseCase.execute({ email, password })
 
-    const token = await replay.jwtSign({}, { sign: { sub: user.id } })
+    const token = await replay.jwtSign(
+      {
+        role: user.role,
+      },
+      {
+        sign: {
+          sub: user.id,
+        },
+      },
+    )
 
-    return replay.status(200).send({ token })
+    const refreshToken = await replay.jwtSign(
+      {
+        role: user.role,
+      },
+      {
+        sign: {
+          sub: user.id,
+          expiresIn: '7d',
+        },
+      },
+    )
+
+    return replay
+      .setCookie('refreshToken', refreshToken, {
+        path: '/',
+        secure: true,
+        sameSite: true,
+        httpOnly: true,
+      })
+      .status(200)
+      .send({ token })
   } catch (err) {
     if (err instanceof InvalidCredentialsError) {
       return replay.status(400).send({ message: err.message })
